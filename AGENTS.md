@@ -11,7 +11,7 @@
 
 ## アーキテクチャ
 
-```
+```text
 frontend/   React 18 + TypeScript + Vite + TailwindCSS
 backend/    Python 3.12 + FastAPI + Mangum (AWS Lambda adapter)
 infra/      AWS CDK (TypeScript)
@@ -20,7 +20,7 @@ infra/      AWS CDK (TypeScript)
 ### AWS構成
 
 | リソース | 用途 |
-|---|---|
+| --- | --- |
 | DynamoDB `trade-lab-hypotheses` | 仮説データ（エントリー・見送り記録） |
 | S3 `trade-lab-charts-{account}` | チャートスクリーンショット画像 |
 | Lambda `trade-lab-backend` | FastAPI実行 |
@@ -31,7 +31,7 @@ infra/      AWS CDK (TypeScript)
 
 ## ディレクトリ構成
 
-```
+```text
 trade-lab/
 ├── frontend/src/
 │   ├── api/client.ts        # 全APIコール（axios）
@@ -63,7 +63,7 @@ trade-lab/
 ### DynamoDB テーブル: `trade-lab-hypotheses`
 
 | フィールド | 型 | 説明 |
-|---|---|---|
+| --- | --- | --- |
 | `pk` | String (PK) | `ENTRY#{uuid}` |
 | `gsi1pk` | String (GSI PK) | `DATE#{YYYY-MM-DD}` |
 | `id` | String | UUID |
@@ -86,7 +86,7 @@ trade-lab/
 
 ## API エンドポイント
 
-```
+```text
 GET    /entries              一覧（?type=entry|pass&status=open|closed）
 POST   /entries              新規作成
 GET    /entries/{id}         詳細
@@ -141,20 +141,24 @@ cd ../frontend && npm run build
 ## 拡張時の注意点
 
 ### 新しい分析軸を追加する場合
+
 1. `backend/app/routers/analysis.py` に新しいエンドポイントを追加
 2. `frontend/src/api/client.ts` に対応するAPI関数を追加
 3. `frontend/src/pages/Analysis.tsx` にグラフセクションを追加
 
 ### 価格データ取得機能を追加する場合（T-08, T-14）
+
 - Yahoo Finance: `yfinance` ライブラリ（Python）で取得可能。銘柄コードは `{ticker}.T` 形式（例: `4062.T`）
 - J-Quants API: 無料枠あり、日本株専用で信頼性が高い
 - バックエンドに `routers/prices.py` を新設し、Lambda の環境変数で API キーを管理
 
 ### 銘柄オートコンプリートを追加する場合（T-07）
+
 - 東証上場銘柄の CSVは JPX（日本取引所グループ）から無料取得可能
 - S3に銘柄マスタJSONを置いてフロントエンドから直接参照する方式が低コスト
 
 ### チャート表示を追加する場合（T-15, T-16）
+
 - `lightweight-charts`（TradingView製）がローソク足に最適
 - `recharts` は現在の分析グラフに使用中。ローソク足は別ライブラリ推奨
 

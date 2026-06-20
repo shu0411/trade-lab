@@ -5,7 +5,7 @@
 
 ## 構成
 
-```
+```txt
 frontend/   React 18 + TypeScript + Vite + TailwindCSS
 backend/    Python 3.12 + FastAPI + Mangum (Lambda)
 infra/      AWS CDK (TypeScript)

@@ -1,0 +1,53 @@
+name: Backend Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      localstack:
+        image: localstack/localstack:3
+        ports:
+          - 4566:4566
+        env:
+          SERVICES: dynamodb,s3
+          DEFAULT_REGION: ap-northeast-1
+
+    env:
+      AWS_DEFAULT_REGION: ap-northeast-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_ENDPOINT_URL: http://localhost:4566
+      TABLE_NAME: trade-lab-hypotheses
+      IMAGES_BUCKET: trade-lab-charts-local
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Wait for LocalStack
+        run: |
+          until curl -sf http://localhost:4566/_localstack/health \
+            | python3 -c "import sys,json; s=json.load(sys.stdin)['services']; sys.exit(0 if s.get('dynamodb')=='available' else 1)"; do
+            echo "Waiting for LocalStack..."
+            sleep 2
+          done
+
+      - name: Setup LocalStack resources
+        run: bash backend/scripts/setup-localstack.sh
+
+      - name: Run tests
+        working-directory: backend
+        run: python -m pytest tests/ -v

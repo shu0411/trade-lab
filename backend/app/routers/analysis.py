@@ -1,28 +1,15 @@
-import os
-import boto3
-from fastapi import APIRouter
-from collections import defaultdict
+from fastapi import APIRouter, Depends
+
+from app.services.entry_store import EntryStore
+from app.dependencies import get_entry_store
 
 router = APIRouter()
-
-TABLE_NAME = os.environ.get("TABLE_NAME", "trade-lab-hypotheses")
-dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table(TABLE_NAME)
 
 FIXED_REASONS = [
     "25日線反発", "75日線反発", "高値更新", "出来高増加",
     "ゴールデンクロス", "安値切り上げ", "移動平均線上向き",
 ]
 PATTERNS = ["押し目", "ブレイクアウト", "その他"]
-
-
-def _scan_all():
-    result = table.scan()
-    items = result.get("Items", [])
-    while "LastEvaluatedKey" in result:
-        result = table.scan(ExclusiveStartKey=result["LastEvaluatedKey"])
-        items.extend(result.get("Items", []))
-    return items
 
 
 def _rate(total: int, success: int) -> float | None:
@@ -32,8 +19,8 @@ def _rate(total: int, success: int) -> float | None:
 
 
 @router.get("/summary")
-def summary():
-    items = _scan_all()
+def summary(store: EntryStore = Depends(get_entry_store)):
+    items = store.list_all()
     entries = [i for i in items if i.get("type") == "entry"]
     closed = [i for i in entries if i.get("status") == "closed"]
     success = [i for i in closed if i.get("result") == "success"]
@@ -47,8 +34,8 @@ def summary():
 
 
 @router.get("/patterns")
-def patterns():
-    items = _scan_all()
+def patterns(store: EntryStore = Depends(get_entry_store)):
+    items = store.list_all()
     entries = [i for i in items if i.get("type") == "entry"]
     result = []
     for pattern in PATTERNS:
@@ -66,8 +53,8 @@ def patterns():
 
 
 @router.get("/reasons")
-def reasons():
-    items = _scan_all()
+def reasons(store: EntryStore = Depends(get_entry_store)):
+    items = store.list_all()
     entries = [i for i in items if i.get("type") == "entry"]
     result = []
     for reason in FIXED_REASONS:

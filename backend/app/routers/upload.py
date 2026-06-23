@@ -7,7 +7,12 @@ from pydantic import BaseModel
 router = APIRouter()
 
 BUCKET = os.environ.get("IMAGES_BUCKET", "")
-s3 = boto3.client("s3")
+AWS_REGION = os.environ.get("AWS_DEFAULT_REGION", "ap-northeast-1")
+s3 = boto3.client(
+    "s3",
+    region_name=AWS_REGION,
+    endpoint_url=os.environ.get("AWS_ENDPOINT_URL"),
+)
 
 
 class PresignedUrlRequest(BaseModel):

@@ -7,7 +7,7 @@
 
 ```txt
 frontend/   React 18 + TypeScript + Vite + TailwindCSS
-backend/    Python 3.12 + FastAPI + Mangum (Lambda)
+backend/    Python 3.13 + FastAPI
 infra/      AWS CDK (TypeScript)
 ```
 
@@ -24,32 +24,17 @@ npm run dev
 
 ### バックエンド（ローカル開発）
 
-LocalStack を使って AWS リソース（DynamoDB・S3）をローカルでエミュレートします。  
-事前に [Docker](https://www.docker.com/) のインストールが必要です。
+デフォルトでは **SQLite** をデータストアとして使用するため、Docker や LocalStack は不要です。
 
-#### 1. LocalStack 起動
-
-```bash
-cd backend/docker
-docker compose up -d
-```
-
-#### 2. テーブル・バケット作成（初回のみ）
-
-```bash
-AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test \
-  bash backend/scripts/setup-localstack.sh
-```
-
-#### 3. 環境変数の設定
+#### 1. 環境変数の設定
 
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-`backend/.env` の内容はそのまま使えます（LocalStack 用の設定があらかじめ記載されています）。
+`.env` の内容はそのままで動作します（デフォルトで SQLite が使われます）。
 
-#### 4. サーバー起動
+#### 2. サーバー起動
 
 ```bash
 cd backend
@@ -60,7 +45,27 @@ set -a && source .env && set +a   # 環境変数読み込み
 uvicorn app.main:app --reload --port 8000
 ```
 
-> 本物の AWS に接続する場合は `backend/.env` の `AWS_ENDPOINT_URL` / `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` の3行をコメントアウトし、`~/.aws/credentials` に実際の認証情報を設定してください。
+データは `backend/trade_lab.db` に永続化されます。
+
+#### ストアバックエンドの切り替え
+
+| `STORE_BACKEND` | 使用するストア | 備考 |
+| --- | --- | --- |
+| 未設定 / `sqlite` | SQLite（`trade_lab.db`） | ローカル開発用 |
+| `dynamodb` | DynamoDB / LocalStack | 本番または LocalStack 使用時 |
+
+**LocalStack を使う場合**（事前に [Docker](https://www.docker.com/) が必要）:
+
+```bash
+cd backend/docker
+docker compose up -d
+AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test \
+  bash backend/scripts/setup-localstack.sh
+```
+
+その後 `backend/.env` で `STORE_BACKEND=dynamodb` と `AWS_ENDPOINT_URL=http://localhost:4566` を設定してください。
+
+> 本物の AWS に接続する場合は `STORE_BACKEND=dynamodb` を設定し、`AWS_ENDPOINT_URL` をコメントアウトして `~/.aws/credentials` に実際の認証情報を設定してください。
 
 ### テスト
 

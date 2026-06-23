@@ -10,6 +10,9 @@ __pycache__/
 .venv/
 *.egg-info/
 
+# SQLite (ローカル開発用DB)
+*.db
+
 # CDK
 infra/cdk.out/
 

@@ -6,14 +6,19 @@
     "build": "tsc",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "lint": "eslint .",
     "watch": "tsc -w",
     "cdk": "cdk"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "20.x",
     "aws-cdk": "2.x",
+    "eslint": "^10.5.0",
+    "globals": "^17.6.0",
     "prettier": "^3.6.2",
     "typescript": "~5.4.0",
-    "@types/node": "20.x"
+    "typescript-eslint": "^8.61.1"
   },
   "dependencies": {
     "aws-cdk-lib": "2.x",

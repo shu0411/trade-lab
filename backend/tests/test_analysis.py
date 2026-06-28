@@ -1,4 +1,3 @@
-import pytest
 from app.models.entry import EntryCreate, entry_to_dynamo
 
 BASE = {

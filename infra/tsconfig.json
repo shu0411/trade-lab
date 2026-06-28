@@ -12,6 +12,7 @@
     "outDir": "./dist",
     "rootDir": "./",
     "esModuleInterop": true,
+    "types": ["node"],
     "skipLibCheck": true
   },
   "include": ["bin/**/*", "lib/**/*"],

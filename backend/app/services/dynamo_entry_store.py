@@ -10,8 +10,12 @@ class DynamoEntryStore:
     def __init__(self):
         region = os.environ.get("AWS_DEFAULT_REGION", "ap-northeast-1")
         endpoint_url = os.environ.get("AWS_ENDPOINT_URL")
-        dynamodb = boto3.resource("dynamodb", region_name=region, endpoint_url=endpoint_url)
-        self.table = dynamodb.Table(os.environ.get("TABLE_NAME", "trade-lab-hypotheses"))
+        dynamodb = boto3.resource(
+            "dynamodb", region_name=region, endpoint_url=endpoint_url
+        )
+        self.table = dynamodb.Table(
+            os.environ.get("TABLE_NAME", "trade-lab-hypotheses")
+        )
 
     def list_all(self) -> list[dict]:
         result = self.table.scan()

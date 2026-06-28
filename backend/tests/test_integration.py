@@ -46,10 +46,12 @@ def test_list_all(store):
 
 def test_update(store):
     from app.models.entry import ResultUpdate
+
     item = entry_to_dynamo(ENTRY)
     store.create(item)
 
     from app.models.entry import ResultUpdate
+
     body = ResultUpdate(exitPrice=3300.0, result="success", resultNote="目標達成")
     updated = store.update(item["id"], body)
     assert updated["status"] == "closed"

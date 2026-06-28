@@ -76,7 +76,9 @@ export default function EntryList() {
         </div>
       ) : (
         <div className="space-y-3">
-          {entries.map((e) => <EntryCard key={e.id} entry={e} />)}
+          {entries.map((e) => (
+            <EntryCard key={e.id} entry={e} />
+          ))}
         </div>
       )}
     </div>

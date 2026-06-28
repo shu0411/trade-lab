@@ -24,15 +24,21 @@ class InMemoryEntryStore:
 
     def update(self, entry_id: str, body: ResultUpdate) -> dict:
         item = self._items[f"ENTRY#{entry_id}"]
-        item.update({
-            "exitPrice": str(body.exitPrice),
-            "maxGainPct": str(body.maxGainPct) if body.maxGainPct is not None else None,
-            "maxLossPct": str(body.maxLossPct) if body.maxLossPct is not None else None,
-            "result": body.result,
-            "resultNote": body.resultNote,
-            "status": "closed",
-            "closedAt": datetime.utcnow().isoformat(),
-        })
+        item.update(
+            {
+                "exitPrice": str(body.exitPrice),
+                "maxGainPct": (
+                    str(body.maxGainPct) if body.maxGainPct is not None else None
+                ),
+                "maxLossPct": (
+                    str(body.maxLossPct) if body.maxLossPct is not None else None
+                ),
+                "result": body.result,
+                "resultNote": body.resultNote,
+                "status": "closed",
+                "closedAt": datetime.utcnow().isoformat(),
+            }
+        )
         return item
 
     def delete(self, entry_id: str) -> None:

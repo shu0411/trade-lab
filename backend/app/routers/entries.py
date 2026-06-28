@@ -1,7 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Optional
 
-from app.models.entry import EntryCreate, ResultUpdate, entry_to_dynamo, dynamo_to_response
+from app.models.entry import (
+    EntryCreate,
+    ResultUpdate,
+    entry_to_dynamo,
+    dynamo_to_response,
+)
 from app.services.entry_store import EntryStore
 from app.dependencies import get_entry_store
 
@@ -39,7 +44,9 @@ def get_entry(entry_id: str, store: EntryStore = Depends(get_entry_store)):
 
 
 @router.put("/{entry_id}")
-def update_entry(entry_id: str, body: ResultUpdate, store: EntryStore = Depends(get_entry_store)):
+def update_entry(
+    entry_id: str, body: ResultUpdate, store: EntryStore = Depends(get_entry_store)
+):
     if not store.get(entry_id):
         raise HTTPException(status_code=404, detail="Entry not found")
     return dynamo_to_response(store.update(entry_id, body))

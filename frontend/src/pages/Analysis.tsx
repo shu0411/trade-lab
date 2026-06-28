@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from 'recharts';
 import { getPatternStats, getReasonStats } from '../api/client';
 import type { PatternStat, ReasonStat } from '../types/entry';
 
@@ -27,7 +36,9 @@ export default function Analysis() {
       <section>
         <h2 className="text-lg font-semibold text-gray-700 mb-4">パターン別成功率</h2>
         {patterns.every((p) => p.total === 0) ? (
-          <p className="text-gray-400 text-sm">データがありません（クローズ済みの記録が必要です）</p>
+          <p className="text-gray-400 text-sm">
+            データがありません（クローズ済みの記録が必要です）
+          </p>
         ) : (
           <>
             <ResponsiveContainer width="100%" height={220}>
@@ -37,18 +48,28 @@ export default function Analysis() {
                 <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 12 }} />
                 <Tooltip formatter={(v: number) => [`${v}%`, '成功率']} />
                 <Bar dataKey="successRate" radius={[6, 6, 0, 0]}>
-                  {patterns.map((p, i) => <Cell key={i} fill={barColor(p.successRate)} />)}
+                  {patterns.map((p, i) => (
+                    <Cell key={i} fill={barColor(p.successRate)} />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
             <div className="grid grid-cols-3 gap-4 mt-4">
               {patterns.map((p) => (
-                <div key={p.pattern} className="bg-white rounded-xl border border-gray-200 p-4 text-center">
+                <div
+                  key={p.pattern}
+                  className="bg-white rounded-xl border border-gray-200 p-4 text-center"
+                >
                   <div className="text-sm text-gray-500">{p.pattern}</div>
-                  <div className="text-2xl font-bold mt-1" style={{ color: barColor(p.successRate) }}>
+                  <div
+                    className="text-2xl font-bold mt-1"
+                    style={{ color: barColor(p.successRate) }}
+                  >
                     {p.successRate !== null ? `${p.successRate}%` : '—'}
                   </div>
-                  <div className="text-xs text-gray-400 mt-1">{p.closed}/{p.total}件</div>
+                  <div className="text-xs text-gray-400 mt-1">
+                    {p.closed}/{p.total}件
+                  </div>
                 </div>
               ))}
             </div>
@@ -60,17 +81,26 @@ export default function Analysis() {
       <section>
         <h2 className="text-lg font-semibold text-gray-700 mb-4">根拠別成功率</h2>
         {reasons.every((r) => r.total === 0) ? (
-          <p className="text-gray-400 text-sm">データがありません（クローズ済みの記録が必要です）</p>
+          <p className="text-gray-400 text-sm">
+            データがありません（クローズ済みの記録が必要です）
+          </p>
         ) : (
           <>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={reasons} layout="vertical" barSize={22} margin={{ left: 90 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 12 }} />
+                <XAxis
+                  type="number"
+                  domain={[0, 100]}
+                  tickFormatter={(v) => `${v}%`}
+                  tick={{ fontSize: 12 }}
+                />
                 <YAxis type="category" dataKey="reason" tick={{ fontSize: 12 }} width={90} />
                 <Tooltip formatter={(v: number) => [`${v}%`, '成功率']} />
                 <Bar dataKey="successRate" radius={[0, 6, 6, 0]}>
-                  {reasons.map((r, i) => <Cell key={i} fill={barColor(r.successRate)} />)}
+                  {reasons.map((r, i) => (
+                    <Cell key={i} fill={barColor(r.successRate)} />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -90,10 +120,15 @@ export default function Analysis() {
                         }}
                       />
                     </div>
-                    <span className="w-12 text-right font-medium" style={{ color: barColor(r.successRate) }}>
+                    <span
+                      className="w-12 text-right font-medium"
+                      style={{ color: barColor(r.successRate) }}
+                    >
                       {r.successRate !== null ? `${r.successRate}%` : '—'}
                     </span>
-                    <span className="text-xs text-gray-400">{r.closed}/{r.total}件</span>
+                    <span className="text-xs text-gray-400">
+                      {r.closed}/{r.total}件
+                    </span>
                   </div>
                 ))}
             </div>

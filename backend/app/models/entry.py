@@ -4,11 +4,15 @@ from pydantic import BaseModel, Field, model_validator
 from datetime import datetime
 import uuid
 
-
 PATTERNS = Literal["押し目", "ブレイクアウト", "その他"]
 REASONS = Literal[
-    "25日線反発", "75日線反発", "高値更新", "出来高増加",
-    "ゴールデンクロス", "安値切り上げ", "移動平均線上向き"
+    "25日線反発",
+    "75日線反発",
+    "高値更新",
+    "出来高増加",
+    "ゴールデンクロス",
+    "安値切り上げ",
+    "移動平均線上向き",
 ]
 RESULTS = Literal["success", "failure", "breakeven"]
 

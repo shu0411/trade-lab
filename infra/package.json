@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "build": "tsc",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "watch": "tsc -w",
     "cdk": "cdk"
   },
   "devDependencies": {
     "aws-cdk": "2.x",
+    "prettier": "^3.6.2",
     "typescript": "~5.4.0",
     "@types/node": "20.x"
   },

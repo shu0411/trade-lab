@@ -24,7 +24,9 @@ export default function EntryCard({ entry }: { entry: Entry }) {
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-semibold text-gray-800">{entry.tickerName}</span>
               <span className="text-xs text-gray-400">{entry.ticker}</span>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${isPass ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}>
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full font-medium ${isPass ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}
+              >
                 {isPass ? '見送り' : 'エントリー'}
               </span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
@@ -36,7 +38,9 @@ export default function EntryCard({ entry }: { entry: Entry }) {
 
           <div className="text-right shrink-0">
             {entry.result ? (
-              <span className={`text-xs px-2 py-1 rounded-full font-medium ${RESULT_COLOR[entry.result]}`}>
+              <span
+                className={`text-xs px-2 py-1 rounded-full font-medium ${RESULT_COLOR[entry.result]}`}
+              >
                 {RESULT_LABEL[entry.result]}
               </span>
             ) : (
@@ -55,7 +59,10 @@ export default function EntryCard({ entry }: { entry: Entry }) {
         {entry.reasons.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-2">
             {entry.reasons.slice(0, 3).map((r) => (
-              <span key={r} className="text-xs bg-gray-50 border border-gray-200 text-gray-500 px-2 py-0.5 rounded">
+              <span
+                key={r}
+                className="text-xs bg-gray-50 border border-gray-200 text-gray-500 px-2 py-0.5 rounded"
+              >
                 {r}
               </span>
             ))}

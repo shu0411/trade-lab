@@ -11,7 +11,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     getSummary().then(setSummary).catch(console.error);
-    getEntries({ type: 'entry' }).then((list) => setRecent(list.slice(0, 5))).catch(console.error);
+    getEntries({ type: 'entry' })
+      .then((list) => setRecent(list.slice(0, 5)))
+      .catch(console.error);
     getPatternStats().then(setPatterns).catch(console.error);
   }, []);
 
@@ -41,7 +43,11 @@ export default function Dashboard() {
         <StatCard label="クローズ済" value={summary?.closed ?? '-'} unit="件" />
         <StatCard
           label="全体成功率"
-          value={summary?.successRate !== null && summary?.successRate !== undefined ? `${summary.successRate}` : '-'}
+          value={
+            summary?.successRate !== null && summary?.successRate !== undefined
+              ? `${summary.successRate}`
+              : '-'
+          }
           unit="%"
           valueClass={rateColor(summary?.successRate ?? null)}
         />
@@ -69,13 +75,17 @@ export default function Dashboard() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-semibold text-gray-700">最近の記録</h2>
-          <Link to="/entries" className="text-sm text-blue-600 hover:underline">すべて見る</Link>
+          <Link to="/entries" className="text-sm text-blue-600 hover:underline">
+            すべて見る
+          </Link>
         </div>
         {recent.length === 0 ? (
           <p className="text-gray-400 text-sm">まだ記録がありません</p>
         ) : (
           <div className="space-y-3">
-            {recent.map((e) => <EntryCard key={e.id} entry={e} />)}
+            {recent.map((e) => (
+              <EntryCard key={e.id} entry={e} />
+            ))}
           </div>
         )}
       </div>
@@ -84,13 +94,22 @@ export default function Dashboard() {
 }
 
 function StatCard({
-  label, value, unit, valueClass = 'text-gray-800',
-}: { label: string; value: string | number; unit: string; valueClass?: string }) {
+  label,
+  value,
+  unit,
+  valueClass = 'text-gray-800',
+}: {
+  label: string;
+  value: string | number;
+  unit: string;
+  valueClass?: string;
+}) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4">
       <div className="text-xs text-gray-500">{label}</div>
       <div className={`text-3xl font-bold mt-1 ${valueClass}`}>
-        {value}<span className="text-base font-normal text-gray-400 ml-1">{unit}</span>
+        {value}
+        <span className="text-base font-normal text-gray-400 ml-1">{unit}</span>
       </div>
     </div>
   );

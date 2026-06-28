@@ -4,7 +4,11 @@ import { getEntry, updateResult, deleteEntry, getSignedReadUrl } from '../api/cl
 import type { Entry, ResultUpdateForm } from '../types/entry';
 import ResultForm from '../components/ResultForm';
 
-const RESULT_LABEL: Record<string, string> = { success: '成功', failure: '失敗', breakeven: '引き分け' };
+const RESULT_LABEL: Record<string, string> = {
+  success: '成功',
+  failure: '失敗',
+  breakeven: '引き分け',
+};
 const RESULT_COLOR: Record<string, string> = {
   success: 'bg-green-100 text-green-700',
   failure: 'bg-red-100 text-red-700',
@@ -58,16 +62,22 @@ export default function EntryDetail() {
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center gap-3">
-        <Link to="/entries" className="text-gray-400 hover:text-gray-600 text-sm">← 一覧</Link>
+        <Link to="/entries" className="text-gray-400 hover:text-gray-600 text-sm">
+          ← 一覧
+        </Link>
         <h1 className="text-xl font-bold text-gray-800">
           {entry.tickerName}
           <span className="text-sm text-gray-400 font-normal ml-2">{entry.ticker}</span>
         </h1>
-        <span className={`text-xs px-2 py-1 rounded-full font-medium ${isPass ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}>
+        <span
+          className={`text-xs px-2 py-1 rounded-full font-medium ${isPass ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'}`}
+        >
           {isPass ? '見送り' : 'エントリー'}
         </span>
         {entry.result && (
-          <span className={`text-xs px-2 py-1 rounded-full font-medium ${RESULT_COLOR[entry.result]}`}>
+          <span
+            className={`text-xs px-2 py-1 rounded-full font-medium ${RESULT_COLOR[entry.result]}`}
+          >
             {RESULT_LABEL[entry.result]}
           </span>
         )}
@@ -83,7 +93,10 @@ export default function EntryDetail() {
 
         {!isPass && (
           <div className="grid grid-cols-3 gap-3 text-sm border-t border-gray-100 pt-4">
-            <InfoItem label="エントリー価格" value={entry.entryPrice ? `${entry.entryPrice.toLocaleString()}円` : '—'} />
+            <InfoItem
+              label="エントリー価格"
+              value={entry.entryPrice ? `${entry.entryPrice.toLocaleString()}円` : '—'}
+            />
             <InfoItem
               label="利確目標"
               value={entry.targetPrice ? `${entry.targetPrice.toLocaleString()}円` : '—'}
@@ -104,7 +117,12 @@ export default function EntryDetail() {
             <p className="text-xs text-gray-500 mb-2">判断根拠</p>
             <div className="flex flex-wrap gap-1">
               {entry.reasons.map((r) => (
-                <span key={r} className="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 rounded">{r}</span>
+                <span
+                  key={r}
+                  className="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 rounded"
+                >
+                  {r}
+                </span>
               ))}
             </div>
             {entry.reasonNote && <p className="text-sm text-gray-600 mt-2">{entry.reasonNote}</p>}
@@ -125,18 +143,36 @@ export default function EntryDetail() {
         <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
           <h3 className="font-semibold text-gray-700">結果</h3>
           <div className="grid grid-cols-3 gap-3 text-sm">
-            <InfoItem label="終了価格" value={entry.exitPrice ? `${entry.exitPrice.toLocaleString()}円` : '—'} />
-            <InfoItem label="最大含み益" value={entry.maxGainPct ? `+${entry.maxGainPct}%` : '—'} valueColor="text-green-600" />
-            <InfoItem label="最大含み損" value={entry.maxLossPct ? `${entry.maxLossPct}%` : '—'} valueColor="text-red-500" />
+            <InfoItem
+              label="終了価格"
+              value={entry.exitPrice ? `${entry.exitPrice.toLocaleString()}円` : '—'}
+            />
+            <InfoItem
+              label="最大含み益"
+              value={entry.maxGainPct ? `+${entry.maxGainPct}%` : '—'}
+              valueColor="text-green-600"
+            />
+            <InfoItem
+              label="最大含み損"
+              value={entry.maxLossPct ? `${entry.maxLossPct}%` : '—'}
+              valueColor="text-red-500"
+            />
           </div>
-          {entry.resultNote && <p className="text-sm text-gray-600 border-t border-gray-100 pt-3">{entry.resultNote}</p>}
+          {entry.resultNote && (
+            <p className="text-sm text-gray-600 border-t border-gray-100 pt-3">
+              {entry.resultNote}
+            </p>
+          )}
         </div>
       ) : (
         !isPass && <ResultForm entry={entry} onSubmit={handleResultSubmit} />
       )}
 
       <div className="pt-2">
-        <button onClick={handleDelete} className="text-sm text-red-400 hover:text-red-600 transition">
+        <button
+          onClick={handleDelete}
+          className="text-sm text-red-400 hover:text-red-600 transition"
+        >
           この記録を削除
         </button>
       </div>
@@ -145,8 +181,18 @@ export default function EntryDetail() {
 }
 
 function InfoItem({
-  label, value, sub, subColor = '', valueColor = 'text-gray-800',
-}: { label: string; value: string; sub?: string; subColor?: string; valueColor?: string }) {
+  label,
+  value,
+  sub,
+  subColor = '',
+  valueColor = 'text-gray-800',
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  subColor?: string;
+  valueColor?: string;
+}) {
   return (
     <div>
       <p className="text-xs text-gray-400">{label}</p>

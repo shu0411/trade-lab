@@ -28,9 +28,11 @@ class SqliteEntryStore:
         return [json.loads(r[0]) for r in rows]
 
     def get(self, entry_id: str) -> Optional[dict]:
-        row = _get_conn().execute(
-            "SELECT data FROM entries WHERE pk = ?", (f"ENTRY#{entry_id}",)
-        ).fetchone()
+        row = (
+            _get_conn()
+            .execute("SELECT data FROM entries WHERE pk = ?", (f"ENTRY#{entry_id}",))
+            .fetchone()
+        )
         return json.loads(row[0]) if row else None
 
     def create(self, item: dict) -> dict:
@@ -48,15 +50,21 @@ class SqliteEntryStore:
             "SELECT data FROM entries WHERE pk = ?", (f"ENTRY#{entry_id}",)
         ).fetchone()
         item = json.loads(row[0])
-        item.update({
-            "exitPrice": str(body.exitPrice),
-            "maxGainPct": str(body.maxGainPct) if body.maxGainPct is not None else None,
-            "maxLossPct": str(body.maxLossPct) if body.maxLossPct is not None else None,
-            "result": body.result,
-            "resultNote": body.resultNote,
-            "status": "closed",
-            "closedAt": datetime.utcnow().isoformat(),
-        })
+        item.update(
+            {
+                "exitPrice": str(body.exitPrice),
+                "maxGainPct": (
+                    str(body.maxGainPct) if body.maxGainPct is not None else None
+                ),
+                "maxLossPct": (
+                    str(body.maxLossPct) if body.maxLossPct is not None else None
+                ),
+                "result": body.result,
+                "resultNote": body.resultNote,
+                "status": "closed",
+                "closedAt": datetime.utcnow().isoformat(),
+            }
+        )
         conn.execute(
             "UPDATE entries SET data = ? WHERE pk = ?",
             (json.dumps(item), f"ENTRY#{entry_id}"),

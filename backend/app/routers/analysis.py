@@ -6,8 +6,13 @@ from app.dependencies import get_entry_store
 router = APIRouter()
 
 FIXED_REASONS = [
-    "25日線反発", "75日線反発", "高値更新", "出来高増加",
-    "ゴールデンクロス", "安値切り上げ", "移動平均線上向き",
+    "25日線反発",
+    "75日線反発",
+    "高値更新",
+    "出来高増加",
+    "ゴールデンクロス",
+    "安値切り上げ",
+    "移動平均線上向き",
 ]
 PATTERNS = ["押し目", "ブレイクアウト", "その他"]
 
@@ -42,13 +47,15 @@ def patterns(store: EntryStore = Depends(get_entry_store)):
         pats = [i for i in entries if i.get("pattern") == pattern]
         closed = [i for i in pats if i.get("status") == "closed"]
         success = [i for i in closed if i.get("result") == "success"]
-        result.append({
-            "pattern": pattern,
-            "total": len(pats),
-            "closed": len(closed),
-            "success": len(success),
-            "successRate": _rate(len(closed), len(success)),
-        })
+        result.append(
+            {
+                "pattern": pattern,
+                "total": len(pats),
+                "closed": len(closed),
+                "success": len(success),
+                "successRate": _rate(len(closed), len(success)),
+            }
+        )
     return result
 
 
@@ -61,11 +68,13 @@ def reasons(store: EntryStore = Depends(get_entry_store)):
         matched = [i for i in entries if reason in i.get("reasons", [])]
         closed = [i for i in matched if i.get("status") == "closed"]
         success = [i for i in closed if i.get("result") == "success"]
-        result.append({
-            "reason": reason,
-            "total": len(matched),
-            "closed": len(closed),
-            "success": len(success),
-            "successRate": _rate(len(closed), len(success)),
-        })
+        result.append(
+            {
+                "reason": reason,
+                "total": len(matched),
+                "closed": len(closed),
+                "success": len(success),
+                "successRate": _rate(len(closed), len(success)),
+            }
+        )
     return result

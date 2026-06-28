@@ -50,7 +50,8 @@ export class TradeLabStack extends cdk.Stack {
         bundling: {
           image: lambda.Runtime.PYTHON_3_12.bundlingImage,
           command: [
-            'bash', '-c',
+            'bash',
+            '-c',
             'pip install -r requirements.txt -t /asset-output && cp -r app /asset-output/',
           ],
         },
@@ -116,7 +117,9 @@ export class TradeLabStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, 'ApiEndpoint', { value: httpApi.apiEndpoint });
-    new cdk.CfnOutput(this, 'CloudFrontUrl', { value: `https://${distribution.distributionDomainName}` });
+    new cdk.CfnOutput(this, 'CloudFrontUrl', {
+      value: `https://${distribution.distributionDomainName}`,
+    });
     new cdk.CfnOutput(this, 'FrontendBucket', { value: frontendBucket.bucketName });
   }
 }

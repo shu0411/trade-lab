@@ -35,6 +35,7 @@ jobs:
           python-version: "3.13"
 
       - name: Install dependencies
+        working-directory: backend
         run: uv sync --dev
 
       - name: Wait for LocalStack
@@ -46,7 +47,8 @@ jobs:
           done
 
       - name: Setup LocalStack resources
-        run: bash backend/scripts/setup-localstack.sh
+        working-directory: backend
+        run: bash scripts/setup-localstack.sh
 
       - name: Run tests
         working-directory: backend

@@ -58,6 +58,7 @@ export class TradeLabStack extends cdk.Stack {
       environment: {
         TABLE_NAME: table.tableName,
         IMAGES_BUCKET: imagesBucket.bucketName,
+        STORE_BACKEND: 'dynamodb',
       },
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,

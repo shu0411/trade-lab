@@ -88,15 +88,68 @@ python -m pytest tests/ -v
 
 ### インフラ（AWS CDK）
 
+#### 前提: AWS CLI のインストール
+
+```bash
+# macOS
+brew install awscli
+
+# Windows: https://aws.amazon.com/jp/cli/ からインストーラーをダウンロード
+
+# Linux（/tmp で実行するとカレントディレクトリを汚さない）
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
+unzip /tmp/awscliv2.zip -d /tmp && sudo /tmp/aws/install
+```
+
+#### 認証: IAM Identity Center（SSO）でログイン
+
+長期的なアクセスキーは使用しない。IAM Identity Center の SSO 経由で一時クレデンシャルを取得する。
+
+```bash
+aws sso login --profile developers-sso
+# ブラウザが開いて認証される（セッションは8時間有効）
+```
+
+#### CDK デプロイ
+
 ```bash
 cd infra
 npm install
-npx cdk bootstrap   # 初回のみ
-npx cdk deploy
+AWS_PROFILE=developers-sso npx cdk bootstrap   # 初回のみ（アカウント×リージョン単位）
+AWS_PROFILE=developers-sso npx cdk deploy
 ```
 
 デプロイ後、出力される `ApiEndpoint` を `frontend/.env.local` の `VITE_API_URL` に設定し、
 `npm run build` でビルドして `FrontendBucket` にアップロードする。
+
+#### CI/CD: GitHub Actions OIDC
+
+アクセスキーを GitHub Secrets に持たせず、OIDC でIAMロールを直接引き受ける。
+
+**AWSコンソールでの初期設定（初回のみ）**:
+
+1. IAM → IDプロバイダー → プロバイダーを追加
+   - プロバイダーのタイプ: `OpenID Connect`
+   - プロバイダーURL: `https://token.actions.githubusercontent.com`
+   - 対象者: `sts.amazonaws.com`
+2. IAM → ロール → ロールを作成
+   - 信頼されたエンティティ: 上記のOIDCプロバイダーを選択
+   - 信頼ポリシーの `sub` 条件にリポジトリを指定: `"repo:<GitHubユーザー名>/<リポジトリ名>:*"`
+   - `developers` グループと同じポリシー（`PowerUserAccess` + IAMポリシー）をアタッチ
+
+**GitHub Actions ワークフロー**:
+
+```yaml
+permissions:
+  id-token: write
+  contents: read
+
+steps:
+  - uses: aws-actions/configure-aws-credentials@v4
+    with:
+      role-to-assume: arn:aws:iam::<AWSアカウントID>:role/<ロール名>
+      aws-region: ap-northeast-1
+```
 
 ## 機能
 

@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
 import * as apigateway from 'aws-cdk-lib/aws-apigatewayv2';
 import * as integrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
@@ -41,20 +42,24 @@ export class TradeLabStack extends cdk.Stack {
     });
 
     // Lambda (FastAPI via Mangum)
-    const backendFn = new lambda.Function(this, 'Backend', {
+    const backendFn = new PythonFunction(this, 'Backend', {
       functionName: 'trade-lab-backend',
-      runtime: lambda.Runtime.PYTHON_3_12,
-      handler: 'app.main.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '../../backend'), {
-        bundling: {
-          image: lambda.Runtime.PYTHON_3_12.bundlingImage,
-          command: [
-            'bash',
-            '-c',
-            'pip install -r requirements.txt -t /asset-output && cp -r app /asset-output/',
-          ],
-        },
-      }),
+      runtime: lambda.Runtime.PYTHON_3_13,
+      entry: path.join(__dirname, '../../backend'),
+      index: 'app/main.py',
+      handler: 'handler',
+      bundling: {
+        assetExcludes: [
+          '.venv',
+          '__pycache__',
+          'tests',
+          'trade_lab.db',
+          '.env',
+          '.env.example',
+          'docker',
+          'scripts',
+        ],
+      },
       environment: {
         TABLE_NAME: table.tableName,
         IMAGES_BUCKET: imagesBucket.bucketName,

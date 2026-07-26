@@ -159,6 +159,27 @@ aws sso login --profile developers-sso
 # ブラウザが開いて認証される（セッションは8時間有効）
 ```
 
+#### 前提: Docker のインストール
+
+CDK の Lambda アセットバンドリング（`lambda.Code.fromAsset` の `bundling`）は、Lambda 実行環境と同じ
+イメージで `pip install` を行うために Docker を使用する。`docker: command not found` や
+`spawnSync docker ENOENT` のエラーが出た場合は、Docker が未導入または未起動であることが原因。
+
+```bash
+# WSL2 (Ubuntu) の場合: Docker Engine を直接インストール
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER
+sudo systemctl enable --now docker
+
+# グループ変更を反映（新しいターミナルを開くか newgrp docker を実行）
+newgrp docker
+
+# 動作確認
+docker run hello-world
+```
+
+macOS / Windows（WSL2 の Docker Desktop 連携含む）の場合は [Docker Desktop](https://www.docker.com/products/docker-desktop/) をインストールする。
+
 #### CDK デプロイ
 
 ```bash

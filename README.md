@@ -209,17 +209,8 @@ AWS_PROFILE=developers-sso npx cdk deploy
 
 **GitHub Actions ワークフロー**:
 
-```yaml
-permissions:
-  id-token: write
-  contents: read
-
-steps:
-  - uses: aws-actions/configure-aws-credentials@v4
-    with:
-      role-to-assume: arn:aws:iam::388795800221:role/trade-lab-oidc-role
-      aws-region: ap-northeast-1
-```
+`main` への push で自動デプロイされる。CDK デプロイ、フロントエンドのビルド、S3 へのアップロード、
+CloudFront キャッシュの無効化までを行う。詳細は [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) を参照。
 
 ## 機能
 

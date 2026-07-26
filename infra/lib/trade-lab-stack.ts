@@ -121,5 +121,6 @@ export class TradeLabStack extends cdk.Stack {
       value: `https://${distribution.distributionDomainName}`,
     });
     new cdk.CfnOutput(this, 'FrontendBucket', { value: frontendBucket.bucketName });
+    new cdk.CfnOutput(this, 'DistributionId', { value: distribution.distributionId });
   }
 }

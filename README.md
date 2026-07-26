@@ -105,6 +105,55 @@ unzip /tmp/awscliv2.zip -d /tmp && sudo /tmp/aws/install
 
 長期的なアクセスキーは使用しない。IAM Identity Center の SSO 経由で一時クレデンシャルを取得する。
 
+##### developers-sso プロファイルの作成（初回のみ）
+
+**IAM Identity Center 側の準備（管理者が実施、初回のみ）**:
+
+1. IAM Identity Center → ユーザー → ユーザーを追加 → `iam-developer` を作成
+2. IAM Identity Center → グループ → グループを作成
+   - グループ名: `iam-developers`
+   - メンバーに `iam-developer` を追加
+3. IAM Identity Center → 許可セット → 許可セットを作成
+   - 許可セット名: `DevelopersAccess`
+   - アクセス許可ポリシー: `PowerUserAccess` + カスタマーマネージドポリシー `cdk-iam-policy`
+4. IAM Identity Center → AWS アカウント → 対象アカウント（`388795800221`）を選択 → 「ユーザーまたはグループの割り当て」でグループ `iam-developers` に許可セット `DevelopersAccess` を割り当てる
+
+**ローカル PC 側でのプロファイル設定**:
+
+```bash
+aws configure sso --profile developers-sso
+```
+
+対話式プロンプトには以下を入力する：
+
+| 項目 | 値 |
+| --- | --- |
+| SSO session name | 任意（例: `trade-lab`） |
+| SSO start URL | `https://d-9567629792.awsapps.com/start` |
+| SSO region | `ap-northeast-1` |
+| SSO registration scopes | Enter でデフォルト（`sso:account:access`） |
+| （ブラウザでログイン後）CLI default client Region | `ap-northeast-1` |
+| CLI default output format | 任意（例: `json`） |
+| CLI profile name | `developers-sso` |
+
+完了すると `~/.aws/config` に以下の内容が追記される（手動で編集してもよい）：
+
+```ini
+[profile developers-sso]
+sso_session = trade-lab
+sso_account_id = 388795800221
+sso_role_name = DevelopersAccess
+region = ap-northeast-1
+output = json
+
+[sso-session trade-lab]
+sso_start_url = https://d-9567629792.awsapps.com/start
+sso_region = ap-northeast-1
+sso_registration_scopes = sso:account:access
+```
+
+##### ログイン
+
 ```bash
 aws sso login --profile developers-sso
 # ブラウザが開いて認証される（セッションは8時間有効）
@@ -135,7 +184,7 @@ AWS_PROFILE=developers-sso npx cdk deploy
 2. IAM → ロール → ロールを作成
    - 信頼されたエンティティ: 上記のOIDCプロバイダーを選択
    - 信頼ポリシーの `sub` 条件にリポジトリを指定: `"repo:<GitHubユーザー名>/<リポジトリ名>:*"`
-   - `developers` グループと同じポリシー（`PowerUserAccess` + IAMポリシー）をアタッチ
+   - `developers` グループと同じポリシー（`PowerUserAccess` + `cdk-iam-policy`）をアタッチ
 
 **GitHub Actions ワークフロー**:
 
@@ -147,7 +196,7 @@ permissions:
 steps:
   - uses: aws-actions/configure-aws-credentials@v4
     with:
-      role-to-assume: arn:aws:iam::<AWSアカウントID>:role/<ロール名>
+      role-to-assume: arn:aws:iam::388795800221:role/trade-lab-oidc-role
       aws-region: ap-northeast-1
 ```
 

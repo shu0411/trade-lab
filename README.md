@@ -212,6 +212,17 @@ AWS_PROFILE=developers-sso npx cdk deploy
 `main` への push で自動デプロイされる。CDK デプロイ、フロントエンドのビルド、S3 へのアップロード、
 CloudFront キャッシュの無効化までを行う。詳細は [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) を参照。
 
+#### チケット駆動開発: claude-code-action
+
+GitHub Issue に `ready-for-claude` ラベルを付与すると、
+[`.github/workflows/claude.yml`](.github/workflows/claude.yml) 経由で
+[claude-code-action](https://github.com/anthropics/claude-code-action) が自動起動し、
+Issue の内容に沿って実装・ブランチ push・PR 作成までを行う（main への直接反映はせず、
+必ず PR レビューを経る）。開発規約は [`AGENTS.md`](AGENTS.md) を参照する。
+
+利用には GitHub Secrets に `ANTHROPIC_API_KEY`（Anthropic API キー）の登録が必要。
+また `ready-for-claude` ラベルをリポジトリに作成しておくこと。
+
 ## 機能
 
 - **仮説登録**: エントリー記録 / 見送り記録

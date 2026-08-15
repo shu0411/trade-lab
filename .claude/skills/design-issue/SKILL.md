@@ -18,10 +18,10 @@ Trade LabのIssue駆動 + AIエージェント実装フローにおける「設�
 
 - ソースコードの編集・新規作成をしない
 - `git commit` / ブランチ作成をしない
-- `ready-for-agent` などのラベル付与をしない（実装開始の承認は常に人間が行う）
+- `ready-for-claude` などのラベル付与をしない（実装開始の承認は常に人間が行う）
 
 実装は、このSkillでIssueが仕様書として詰められた後、人間が内容を確認して
-`ready-for-agent` ラベルを付けたときに、GitHub Actions上のClaude Codeが別途行う。
+`ready-for-claude` ラベルを付けたときに、GitHub Actions上のClaude Codeが別途行う。
 
 ## 入力
 
@@ -37,7 +37,7 @@ gh issue view <issue番号> --json title,body,labels,url,state
 ```
 
 - `gh` コマンドが失敗する場合（未インストール・未認証）は、その旨を伝えて停止する
-- 既に `ready-for-agent` ラベルが付いている場合、実装が既に走っている／走る可能性が
+- 既に `ready-for-claude` ラベルが付いている場合、実装が既に走っている／走る可能性が
   あることをユーザーに伝えた上で続行してよいか確認する
 - 既にSpecification/Technical Design相当のセクションが揃っている場合は、新規設計では
   なく更新であることをユーザーに確認する
@@ -129,5 +129,5 @@ Issue本文を更新する。
 gh issue edit <issue番号> --body-file <一時ファイルパス>
 ```
 
-更新後、Issue URLをユーザーに提示し、内容を確認した上で `ready-for-agent` ラベルを
+更新後、Issue URLをユーザーに提示し、内容を確認した上で `ready-for-claude` ラベルを
 付けるかどうかはユーザー自身が判断することを伝える。ラベル付与はこのSkillからは行わない。

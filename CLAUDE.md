@@ -12,9 +12,9 @@ Trade Labは Issue駆動 + AIエージェント実装フローを採用してい
 
 - GitHub Issueの簡単な要件を読み、既存コードを調査し、実装前設計を人間と対話しながら詰める
 - 確定した設計を `gh issue edit` でIssue本文に反映する
-- **実装・コミット・ブランチ作成・ラベル付与は行わない**。`ready-for-agent` を付けるかどうかは常に人間が判断する
+- **実装・コミット・ブランチ作成・ラベル付与は行わない**。`ready-for-claude` を付けるかどうかは常に人間が判断する
 
-### 2. GitHub Actions: 実装フェーズ（`ready-for-agent` ラベル起点）
+### 2. GitHub Actions: 実装フェーズ（`ready-for-claude` ラベル起点）
 
 `.github/workflows/claude-agent-implement.yml` から起動される。
 

@@ -233,7 +233,7 @@ Trade LabはIssue駆動 + AIエージェント実装フローを採用する。
 1. 人間がGitHub Issueに簡単な要件だけ書く
 2. ローカルClaude Codeで /design-issue <番号> を実行し、対話しながら実装前設計を詰める
 3. Claude Codeがgh CLIでIssue本文を設計済み仕様書に更新する
-4. 人間が内容を確認し、ready-for-agent ラベルを付与する（実装開始の明示的な承認）
+4. 人間が内容を確認し、ready-for-claude ラベルを付与する（実装開始の明示的な承認）
 5. GitHub Actions上のClaude Codeが起動し、Issueを実装してPull Requestを作成する
 6. 人間がレビューしてmergeする
 ```

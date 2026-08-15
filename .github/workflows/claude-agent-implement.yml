@@ -1,0 +1,61 @@
+name: Claude Agent - Implement Issue
+
+# 設計フェーズ（ローカルの /design-issue Skill）で仕様書化されたIssueに
+# `ready-for-agent` ラベルが付与されたら、GitHub Actions上のClaude Codeが
+# 実装してPull Requestを作成する。
+#
+# 事前準備（リポジトリ管理者が一度だけ実施）:
+#   - https://github.com/apps/claude をこのリポジトリにインストール
+#   - リポジトリシークレット ANTHROPIC_API_KEY を追加
+#     （Claudeサブスクリプションで運用する場合は claude_code_oauth_token に
+#      置き換え、シークレット名は CLAUDE_CODE_OAUTH_TOKEN とする）
+#   - `ready-for-agent` ラベルをリポジトリに作成
+#
+# mainへの直接push・Pull Requestのmerge・本番デプロイは行わせない
+# （詳細は AGENTS.md の「AIエージェント運用ルール」を参照）。
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  implement:
+    if: github.event.label.name == 'ready-for-agent'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: read
+      id-token: write
+      actions: read
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          label_trigger: "ready-for-agent"
+          base_branch: "main"
+          branch_prefix: "claude/issue-"
+          prompt: |
+            Issue #${{ github.event.issue.number }} を実装してください。
+
+            - AGENTS.md / CLAUDE.md に書かれたこのリポジトリのルールに従うこと
+            - Issueの Specification / Acceptance Criteria / Technical Design /
+              Affected Areas / Test Plan を実装前設計として扱うこと
+            - Issueのスコープ外のファイルは変更しないこと
+            - mainブランチへの直接push、Pull Requestのmerge、デプロイは行わないこと
+            - 実装後は AGENTS.md に記載のlint / test / typecheckコマンドを実行し、
+              パスすることを確認してからコミットすること
+            - 作業ブランチへpushし、"Closes #${{ github.event.issue.number }}" を
+              含むPull Requestを作成すること
+            - Pull Request本文は CLAUDE.md の「Pull Request本文フォーマット」に
+              従うこと（Summary / Implementation / Changed Areas / Verification /
+              Notes）
+          claude_args: |
+            --max-turns 40
+            --model claude-sonnet-5

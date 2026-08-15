@@ -222,3 +222,48 @@ claude-code-action（GitHub Actions）の両方に適用される。
 - **例外: claude-code-action による CI 自動実行では、ブランチの push・PR 作成を行ってよい**
   （そうしないと Issue 駆動開発が成立しないため）。ただし main への直接 push・マージは行わず、
   必ず PR を作成してユーザーのレビュー・マージを経る
+
+---
+
+## AIエージェント運用ルール
+
+Trade LabはIssue駆動 + AIエージェント実装フローを採用する。
+
+```text
+1. 人間がGitHub Issueに簡単な要件だけ書く
+2. ローカルClaude Codeで /design-issue <番号> を実行し、対話しながら実装前設計を詰める
+3. Claude Codeがgh CLIでIssue本文を設計済み仕様書に更新する
+4. 人間が内容を確認し、ready-for-agent ラベルを付与する（実装開始の明示的な承認）
+5. GitHub Actions上のClaude Codeが起動し、Issueを実装してPull Requestを作成する
+6. 人間がレビューしてmergeする
+```
+
+Claude Code固有の役割分担・PR本文フォーマットは [CLAUDE.md](./CLAUDE.md) を参照。
+
+### 変更してはいけないもの
+
+AIエージェント（ローカル・GitHub Actionsいずれも）は以下を行わない。
+
+- `main` ブランチへの直接push
+- Pull Requestのmerge
+- 本番環境へのdeploy（`infra/` のCDKデプロイ操作を含む）
+- 対象Issueのスコープ外のファイル変更
+
+最終的なmerge・deployの判断と実行は必ず人間が行う。
+
+### コミット粒度
+
+- 1コミット = 1つの論理的な変更にする。複数の目的（機能追加・リファクタ・設定変更など）を混在させない
+- 変更ファイル数は1コミットあたり10ファイル程度までを目安に、大きくなりすぎる場合は意味のある単位で分割する
+
+### Agentが実行すべきチェックコマンド
+
+実装後、変更した領域に応じて以下を実行し、パスすることを確認してからコミットする。
+
+```bash
+# backend
+cd backend && uv run pytest tests/ -v
+
+# frontend
+cd frontend && npm run lint && npm run format:check && npx tsc --noEmit && npm run build
+```

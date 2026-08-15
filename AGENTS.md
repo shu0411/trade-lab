@@ -138,40 +138,14 @@ cd ../frontend && npm run build
 
 ---
 
-## 拡張時の注意点
-
-### 新しい分析軸を追加する場合
-
-1. `backend/app/routers/analysis.py` に新しいエンドポイントを追加
-2. `frontend/src/api/client.ts` に対応するAPI関数を追加
-3. `frontend/src/pages/Analysis.tsx` にグラフセクションを追加
-
-### 価格データ取得機能を追加する場合（T-08, T-14）
-
-- Yahoo Finance: `yfinance` ライブラリ（Python）で取得可能。銘柄コードは `{ticker}.T` 形式（例: `4062.T`）
-- J-Quants API: 無料枠あり、日本株専用で信頼性が高い
-- バックエンドに `routers/prices.py` を新設し、Lambda の環境変数で API キーを管理
-
-### 銘柄オートコンプリートを追加する場合（T-07）
-
-- 東証上場銘柄の CSVは JPX（日本取引所グループ）から無料取得可能
-- S3に銘柄マスタJSONを置いてフロントエンドから直接参照する方式が低コスト
-
-### チャート表示を追加する場合（T-15, T-16）
-
-- `lightweight-charts`（TradingView製）がローソク足に最適
-- `recharts` は現在の分析グラフに使用中。ローソク足は別ライブラリ推奨
-
----
-
 ## タスク管理
 
-Jiraでタスク管理。タスク一覧の番号（T-01〜T-18）はJiraチケットIDの命名規則と対応させる。
-フェーズ区分: Phase1（デプロイ）→ Phase2（ブラッシュアップ）→ Phase3（必須拡張）→ Phase4（分析強化）→ Phase5（チャート）→ Phase6（AI）
+Jira と GitHub Issue の2階層で管理する。
 
-新規タスクは GitHub Issue で管理し、`ready-for-claude` ラベルを付与すると
-`.github/workflows/claude.yml` 経由で claude-code-action が自動起動して実装を行う
-（詳細は本ファイル末尾の「開発ガイドライン（共通規約）」を参照）。
+- **Jira**: 人間が大枠のタスクを管理する。
+- **GitHub Issue**: Jiraのタスクを、人間とAgentが実装に着手できる粒度の要件へ分解したもの。
+  `ready-for-claude` ラベルを付与すると `.github/workflows/claude-agent-implement.yml` 経由で
+  claude-code-action が自動起動して実装を行う（詳細は本ファイル末尾の「AIエージェント運用ルール」を参照）。
 
 ---
 
@@ -251,10 +225,7 @@ AIエージェント（ローカル・GitHub Actionsいずれも）は以下を�
 
 最終的なmerge・deployの判断と実行は必ず人間が行う。
 
-### コミット粒度
-
-- 1コミット = 1つの論理的な変更にする。複数の目的（機能追加・リファクタ・設定変更など）を混在させない
-- 変更ファイル数は1コミットあたり10ファイル程度までを目安に、大きくなりすぎる場合は意味のある単位で分割する
+コミット粒度は「開発ガイドライン（共通規約）」の「コミット・PR運用ルール」に従う。
 
 ### Agentが実行すべきチェックコマンド
 

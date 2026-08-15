@@ -21,11 +21,7 @@ Trade Labは Issue駆動 + AIエージェント実装フローを採用してい
 - 対象Issueの本文（設計済みの仕様書）と AGENTS.md / CLAUDE.md のルールに従って実装する
 - 実装後、AGENTS.md に定義されたlint/test/typecheckコマンドを実行し、パスすることを確認する
 - 作業ブランチへコミット・pushし、対象Issueを `Closes #<番号>` で紐付けたPull Requestを作成する
-- **以下は行わない**:
-  - `main` ブランチへの直接push
-  - Pull Requestのmerge
-  - 本番環境へのdeploy（`infra/` のCDKデプロイ操作を含む）
-  - 対象Issueのスコープ外のファイル変更
+- 禁止事項は [AGENTS.md](./AGENTS.md) の「変更してはいけないもの」を参照
 
 ## Pull Request本文フォーマット
 

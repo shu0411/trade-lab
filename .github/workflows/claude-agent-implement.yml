@@ -4,15 +4,8 @@ name: Claude Agent - Implement Issue
 # `ready-for-claude` ラベルが付与されたら、GitHub Actions上のClaude Codeが
 # 実装してPull Requestを作成する。
 #
-# 事前準備（リポジトリ管理者が一度だけ実施）:
-#   - https://github.com/apps/claude をこのリポジトリにインストール
-#   - リポジトリシークレット ANTHROPIC_API_KEY を追加
-#     （Claudeサブスクリプションで運用する場合は claude_code_oauth_token に
-#      置き換え、シークレット名は CLAUDE_CODE_OAUTH_TOKEN とする）
-#   - `ready-for-claude` ラベルをリポジトリに作成
-#
-# mainへの直接push・Pull Requestのmerge・本番デプロイは行わせない
-# （詳細は AGENTS.md の「AIエージェント運用ルール」を参照）。
+# 事前準備・運用ルールは README.md の「チケット駆動開発: claude-code-action」
+# および AGENTS.md を参照。
 
 on:
   issues:

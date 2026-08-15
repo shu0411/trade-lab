@@ -215,7 +215,7 @@ CloudFront キャッシュの無効化までを行う。詳細は [`.github/work
 #### チケット駆動開発: claude-code-action
 
 GitHub Issue に `ready-for-claude` ラベルを付与すると、
-[`.github/workflows/claude.yml`](.github/workflows/claude.yml) 経由で
+[`.github/workflows/claude-agent-implement.yml`](.github/workflows/claude-agent-implement.yml) 経由で
 [claude-code-action](https://github.com/anthropics/claude-code-action) が自動起動し、
 Issue の内容に沿って実装・ブランチ push・PR 作成までを行う（main への直接反映はせず、
 必ず PR レビューを経る）。開発規約は [`AGENTS.md`](AGENTS.md) を参照する。

@@ -27,12 +27,32 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Claudeが lint / test / typecheck を実行できるよう、事前に依存関係を用意する
+      # （バージョンは test.yml / deploy.yml に合わせる）
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: uv sync --dev
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           label_trigger: "ready-for-claude"
           base_branch: "main"
           branch_prefix: "claude/issue-"
+          # 原因調査用。実行内容（拒否されたツール等）をログに出す。切り分け後は削除する
+          show_full_output: true
           prompt: |
             Issue #${{ github.event.issue.number }} を実装してください。
 
@@ -51,3 +71,4 @@ jobs:
           claude_args: |
             --max-turns 40
             --model claude-sonnet-5
+            --allowedTools "Bash(git:*),Bash(gh issue view:*),Bash(gh pr create:*),Bash(gh pr view:*),Bash(cd:*),Bash(cat:*),Bash(npm:*),Bash(npx:*),Bash(uv:*)"

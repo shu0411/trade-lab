@@ -28,8 +28,9 @@ jobs:
           fetch-depth: 1
 
       # Claudeが lint / test / typecheck を実行できるよう、事前に依存関係を用意する
-      # （バージョンは test.yml / deploy.yml に合わせる）
-      - uses: astral-sh/setup-uv@v5
+      # （Python は test.yml、Node は deploy.yml と揃える）
+      # setup-uv は v8 以降 major タグ（@v10 等）が発行されないため、バージョンまで指定する
+      - uses: astral-sh/setup-uv@v10.1.0
         with:
           python-version: "3.13"
 
@@ -37,9 +38,9 @@ jobs:
         working-directory: backend
         run: uv sync --dev
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install frontend dependencies
         working-directory: frontend

@@ -38,8 +38,8 @@ jobs:
             Issue #${{ github.event.issue.number }} を実装してください。
 
             - AGENTS.md / CLAUDE.md に書かれたこのリポジトリのルールに従うこと
-            - Issueの Specification / Acceptance Criteria / Technical Design /
-              Affected Areas / Test Plan を実装前設計として扱うこと
+            - Issueの「仕様」「受け入れ条件」「技術設計」「変更対象」
+              「テスト計画」を実装前設計として扱うこと
             - Issueのスコープ外のファイルは変更しないこと
             - mainブランチへの直接push、Pull Requestのmerge、デプロイは行わないこと
             - 実装後は AGENTS.md に記載のlint / test / typecheckコマンドを実行し、

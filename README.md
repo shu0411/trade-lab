@@ -220,7 +220,9 @@ GitHub Issue に `ready-for-claude` ラベルを付与すると、
 Issue の内容に沿って実装・ブランチ push・PR 作成までを行う（main への直接反映はせず、
 必ず PR レビューを経る）。開発規約は [`AGENTS.md`](AGENTS.md) を参照する。
 
-利用には GitHub Secrets に `ANTHROPIC_API_KEY`（Anthropic API キー）の登録が必要。
+利用には GitHub Secrets に `CLAUDE_CODE_OAUTH_TOKEN` の登録が必要。
+トークンはローカルで `claude setup-token` を実行して発行する（Claude のサブスクリプション契約が前提で、
+API キー方式のような別途のクレジット購入は不要）。
 また `ready-for-claude` ラベルをリポジトリに作成しておくこと。
 
 ## 機能

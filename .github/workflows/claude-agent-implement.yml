@@ -33,8 +33,6 @@ jobs:
           label_trigger: "ready-for-claude"
           base_branch: "main"
           branch_prefix: "claude/issue-"
-          # 原因調査用。エラー本文をログに出す。切り分け後は削除する
-          show_full_output: true
           prompt: |
             Issue #${{ github.event.issue.number }} を実装してください。
 

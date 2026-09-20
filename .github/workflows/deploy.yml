@@ -24,9 +24,9 @@ jobs:
           role-to-assume: arn:aws:iam::388795800221:role/trade-lab-oidc-role
           aws-region: ${{ env.AWS_REGION }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install infra dependencies
         working-directory: infra

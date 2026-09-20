@@ -51,8 +51,6 @@ jobs:
           label_trigger: "ready-for-claude"
           base_branch: "main"
           branch_prefix: "claude/issue-"
-          # 原因調査用。実行内容（拒否されたツール等）をログに出す。切り分け後は削除する
-          show_full_output: true
           prompt: |
             Issue #${{ github.event.issue.number }} を実装してください。
 
@@ -71,4 +69,4 @@ jobs:
           claude_args: |
             --max-turns 40
             --model claude-sonnet-5
-            --allowedTools "Bash(git:*),Bash(gh issue view:*),Bash(gh pr create:*),Bash(gh pr view:*),Bash(cd:*),Bash(cat:*),Bash(npm:*),Bash(npx:*),Bash(uv:*)"
+            --allowedTools "Edit,Write,Bash(git:*),Bash(gh issue view:*),Bash(gh pr create:*),Bash(gh pr view:*),Bash(cd:*),Bash(cat:*),Bash(npm:*),Bash(npx:*),Bash(uv:*)"

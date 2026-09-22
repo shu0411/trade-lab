@@ -3,9 +3,8 @@ name: Claude Agent - Implement Issue
 # 設計フェーズ（ローカルの /design-issue Skill）で仕様書化されたIssueに
 # `ready-for-claude` ラベルが付与されたら、GitHub Actions上のClaude Codeが
 # 実装してPull Requestを作成する。
-#
-# 事前準備・運用ルールは README.md の「チケット駆動開発: claude-code-action」
-# および AGENTS.md を参照。
+# Claudeへの指示（進め方・禁止事項・PR本文フォーマット）は共通Action側にあるため、
+# このファイルには実行環境の準備だけを書く。
 
 on:
   issues:
@@ -46,28 +45,7 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - uses: anthropics/claude-code-action@v1
+      - uses: shu0411/.github/actions/implement-issue@main
         with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          label_trigger: "ready-for-claude"
-          base_branch: "main"
-          branch_prefix: "claude/issue-"
-          prompt: |
-            Issue #${{ github.event.issue.number }} を実装してください。
-
-            - AGENTS.md / CLAUDE.md に書かれたこのリポジトリのルールに従うこと
-            - Issueの「仕様」「受け入れ条件」「技術設計」「変更対象」
-              「テスト計画」を実装前設計として扱うこと
-            - Issueのスコープ外のファイルは変更しないこと
-            - mainブランチへの直接push、Pull Requestのmerge、デプロイは行わないこと
-            - 実装後は AGENTS.md に記載のlint / test / typecheckコマンドを実行し、
-              パスすることを確認してからコミットすること
-            - 作業ブランチへpushし、"Closes #${{ github.event.issue.number }}" を
-              含むPull Requestを作成すること
-            - Pull Request本文は CLAUDE.md の「Pull Request本文フォーマット」に
-              従うこと（Summary / Implementation / Changed Areas / Verification /
-              Notes）
-          claude_args: |
-            --max-turns 40
-            --model claude-sonnet-5
-            --allowedTools "Edit,Write,Bash(git:*),Bash(gh issue view:*),Bash(gh pr create:*),Bash(gh pr view:*),Bash(cd:*),Bash(cat:*),Bash(npm:*),Bash(npx:*),Bash(uv:*)"
+          claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          additional-allowed-tools: "Bash(npm:*),Bash(npx:*),Bash(uv:*)"

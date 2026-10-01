@@ -144,7 +144,7 @@ Jira と GitHub Issue の2階層で管理する。
 
 - **Jira**: 人間が大枠のタスクを管理する。
 - **GitHub Issue**: Jiraのタスクを、人間とAgentが実装に着手できる粒度の要件へ分解したもの。
-  `ready-for-claude` ラベルを付与すると `.github/workflows/claude-agent-implement.yml` 経由で
+  `implement-by-claude` ラベルを付与すると `.github/workflows/claude-agent-implement.yml` 経由で
   claude-code-action が自動起動して実装を行う（詳細は本ファイル末尾の「AIエージェント運用ルール」を参照）。
 
 ---

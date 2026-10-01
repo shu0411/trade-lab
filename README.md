@@ -214,7 +214,12 @@ CloudFront キャッシュの無効化までを行う。詳細は [`.github/work
 
 #### チケット駆動開発: claude-code-action
 
-GitHub Issue に `implement-by-claude` ラベルを付与すると、
+簡単な要求だけを書いた GitHub Issue に `design-by-claude` ラベルを付与すると、
+[`.github/workflows/claude-agent-design.yml`](.github/workflows/claude-agent-design.yml) 経由で
+claude-code-action が既存コードを調査して設計し、Issue 本文を仕様書として更新する（実装は行わない）。
+設計への修正依頼・質問は、Issue のコメントで `@claude` とメンションすると反映・回答される。
+
+設計済みの GitHub Issue に `implement-by-claude` ラベルを付与すると、
 [`.github/workflows/claude-agent-implement.yml`](.github/workflows/claude-agent-implement.yml) 経由で
 [claude-code-action](https://github.com/anthropics/claude-code-action) が自動起動し、
 Issue の内容に沿って実装・ブランチ push・PR 作成までを行う（main への直接反映はせず、
@@ -223,7 +228,7 @@ Issue の内容に沿って実装・ブランチ push・PR 作成までを行う
 利用には GitHub Secrets に `CLAUDE_CODE_OAUTH_TOKEN` の登録が必要。
 トークンはローカルで `claude setup-token` を実行して発行する（Claude のサブスクリプション契約が前提で、
 API キー方式のような別途のクレジット購入は不要）。
-また `implement-by-claude` ラベルをリポジトリに作成しておくこと。
+また `design-by-claude` / `implement-by-claude` ラベルをリポジトリに作成しておくこと。
 
 ## 機能
 

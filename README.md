@@ -22,6 +22,9 @@ cp .env.example .env.local   # API URLを設定
 npm run dev
 ```
 
+Tailwind CSS v4 は `@tailwindcss/postcss` 経由で処理します。
+CSS の読み込みと既存の `tailwind.config.js` の参照は `frontend/src/index.css` で設定しています。
+
 ### バックエンド（ローカル開発）
 
 デフォルトでは **SQLite** をデータストアとして使用するため、Docker や LocalStack は不要です。

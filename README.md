@@ -245,8 +245,9 @@ API キー方式のような別途のクレジット購入は不要）。
 ## Dependabot PR の自動レビュー
 
 PR 作成・更新時に [PR Checks](.github/workflows/pr-checks.yml) がフロントエンドの
-lint・整形・型チェック・本番ビルド、バックエンドの単体テスト、インフラの lint・整形・ビルドを実行する。
-LocalStack を使う統合テストは、既存の [Backend Tests](.github/workflows/test.yml) で実行する。
+lint・整形・型チェック・本番ビルド、バックエンドの単体・統合テスト、インフラの lint・整形・ビルドを並列に実行する。
+バックエンドは LocalStack の DynamoDB・S3 を起動してリソースを作成し、`tests/` 全体を実行する。
+PR Checks は `main` 向けの PR 作成・更新・再オープン時に実行し、`main` への push 時には実行しない。
 
 PR 作成・更新・再オープン時に、[Claude Dependency Review](.github/workflows/claude-dependency-review.yml) が
 作成元ブランチ名が `dependabot/` で始まり、作者が Dependabot 本人の PR を対象に、

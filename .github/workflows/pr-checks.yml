@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: dependency-ci-${{ github.event.pull_request.number }}
+  group: pr-checks-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
@@ -31,6 +31,21 @@ jobs:
   backend:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    services:
+      localstack:
+        image: localstack/localstack:3
+        ports:
+          - 4566:4566
+        env:
+          SERVICES: dynamodb,s3
+          DEFAULT_REGION: ap-northeast-1
+    env:
+      AWS_DEFAULT_REGION: ap-northeast-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_ENDPOINT_URL: http://localhost:4566
+      TABLE_NAME: trade-lab-hypotheses
+      IMAGES_BUCKET: trade-lab-charts-local
     steps:
       - uses: actions/checkout@v6
         with:
@@ -41,7 +56,17 @@ jobs:
       - name: 依存関係をインストール
         working-directory: backend
         run: uv sync --frozen --dev
-      - name: バックエンドの単体テスト
+      - name: LocalStack の起動を待機
+        run: |
+          until curl -sf http://localhost:4566/_localstack/health \
+            | python3 -c "import sys,json; s=json.load(sys.stdin)['services']; sys.exit(0 if all(s.get(service) in ('available', 'running') for service in ('dynamodb', 's3')) else 1)"; do
+            echo "LocalStack の起動を待っています。"
+            sleep 2
+          done
+      - name: LocalStack のリソースを作成
+        working-directory: backend
+        run: bash scripts/setup-localstack.sh
+      - name: バックエンドの単体・統合テスト
         working-directory: backend
         run: uv run pytest tests/ -v
 

@@ -238,3 +238,27 @@ API キー方式のような別途のクレジット購入は不要）。
 - **チャート画像**: S3へのアップロード対応
 - **結果入力**: 終了価格・最大含み益損・振り返りメモ
 - **分析**: パターン別・根拠別の成功率グラフ
+
+
+## Dependabot PR の自動レビュー
+
+PR 作成・更新時に [PR Checks](.github/workflows/pr-checks.yml) がフロントエンドの
+lint・整形・型チェック・本番ビルド、バックエンドの単体テスト、インフラの lint・整形・ビルドを実行する。
+LocalStack を使う統合テストは、既存の [Backend Tests](.github/workflows/test.yml) で実行する。
+
+PR 作成・更新・再オープン時に、[Claude Dependency Review](.github/workflows/claude-dependency-review.yml) が
+作成元ブランチ名が `dependabot/` で始まり、作者が Dependabot 本人の PR を対象に、
+脆弱性・更新前の影響・更新後の互換性を調査し、日本語のコメントを投稿・更新する。
+CI とは並列で実行し、完了を待たない。通常ユーザーの PR は CI のみ実行する。
+コメントには資料収集時点の CI 状態と取得時刻を記載する。CI が未検出なら未設定または未開始とし、
+実行中・取得不能の場合も検証済みとはしない。CI 完了後の自動更新は行わないため、
+マージ時には最新の CI 結果も確認する。
+調査基準・権限設計・制限は
+[共通リポジトリの説明](https://github.com/shu0411/.github#dependabot-の依存更新レビュー)を参照。
+
+利用開始には、共通 Action を先に共通リポジトリの `main` に取り込み、
+その後このリポジトリのワークフローを `main` に取り込む。
+Actions Secret `CLAUDE_CODE_OAUTH_TOKEN` は既存の Issue 設計・実装用と共用する。
+既存 PR は導入後の追加 push、再オープン、または一度発生した調査ワークフローの再実行で調査する。
+PR Checks の再実行だけでは調査は起動しない。
+自動マージ・デプロイは行わない。

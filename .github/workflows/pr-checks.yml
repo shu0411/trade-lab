@@ -1,0 +1,63 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+concurrency:
+  group: dependency-ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: 依存関係をインストール
+        working-directory: frontend
+        run: npm ci
+      - name: lint・整形・型チェック・本番ビルド
+        working-directory: frontend
+        run: npm run lint && npm run format:check && npx tsc --noEmit && npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v10.1.0
+        with:
+          python-version: '3.13'
+      - name: 依存関係をインストール
+        working-directory: backend
+        run: uv sync --frozen --dev
+      - name: バックエンドの単体テスト
+        working-directory: backend
+        run: uv run pytest tests/ -v
+
+  infra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: 依存関係をインストール
+        working-directory: infra
+        run: npm ci
+      - name: インフラの lint・整形・ビルド
+        working-directory: infra
+        run: npm run lint && npm run format:check && npm run build

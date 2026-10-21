@@ -32,6 +32,14 @@ export const getPatternStats = () =>
 
 export const getReasonStats = () => api.get<ReasonStat[]>('/analysis/reasons').then((r) => r.data);
 
+export interface Quote {
+  ticker: string;
+  tickerName: string;
+  price: number;
+}
+
+export const getQuote = (ticker: string) => api.get<Quote>(`/quotes/${ticker}`).then((r) => r.data);
+
 export const uploadChartImage = async (file: File): Promise<string> => {
   const { url, key } = await getPresignedUrl(file.name, file.type);
   await axios.put(url, file, { headers: { 'Content-Type': file.type } });

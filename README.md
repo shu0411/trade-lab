@@ -36,13 +36,14 @@ cp backend/.env.example backend/.env
 
 #### 2. サーバー起動
 
+依存管理には [uv](https://docs.astral.sh/uv/) を使用する（未導入の場合は[インストール手順](https://docs.astral.sh/uv/getting-started/installation/)を参照）。
+Python 3.13 は uv が自動で取得し、仮想環境（`.venv`）も自動で作成される。
+
 ```bash
 cd backend
-python -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+uv sync                           # 依存関係のインストール（pyproject.toml / uv.lock に基づく）
 set -a && source .env && set +a   # 環境変数読み込み
-uvicorn app.main:app --reload --port 8000
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
 データは `backend/trade_lab.db` に永続化されます。
@@ -71,7 +72,7 @@ AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test \
 
 ```bash
 cd backend
-python -m pytest tests/ -v
+uv run pytest tests/ -v
 ```
 
 | テスト種別 | ファイル | LocalStack が必要か |
@@ -83,7 +84,7 @@ LocalStack を起動した状態で統合テストも実行する場合：
 
 ```bash
 set -a && source .env && set +a
-python -m pytest tests/ -v
+uv run pytest tests/ -v
 ```
 
 ### インフラ（AWS CDK）

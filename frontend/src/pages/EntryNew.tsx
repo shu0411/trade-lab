@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createEntry, uploadChartImage } from '../api/client';
+import { createEntry, getQuote, uploadChartImage } from '../api/client';
 import type { EntryType, Pattern } from '../types/entry';
 import { PATTERNS, REASONS } from '../types/entry';
 
@@ -22,6 +22,8 @@ export default function EntryNew() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quoteError, setQuoteError] = useState('');
 
   const ep = parseFloat(entryPrice);
   const tp = parseFloat(targetPct);
@@ -31,6 +33,22 @@ export default function EntryNew() {
 
   const toggleReason = (r: string) => {
     setReasons((prev) => (prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]));
+  };
+
+  const handleTickerBlur = async () => {
+    setQuoteError('');
+    if (!ticker) return;
+
+    setQuoteLoading(true);
+    try {
+      const quote = await getQuote(ticker);
+      if (!tickerName) setTickerName(quote.tickerName);
+      if (type === 'entry' && !entryPrice) setEntryPrice(String(quote.price));
+    } catch {
+      setQuoteError('銘柄情報を取得できませんでした。手動で入力してください');
+    } finally {
+      setQuoteLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -124,10 +142,13 @@ export default function EntryNew() {
             <input
               value={ticker}
               onChange={(e) => setTicker(e.target.value)}
+              onBlur={handleTickerBlur}
               placeholder="4062"
               className={inputCls}
               required
             />
+            {quoteLoading && <p className="text-xs text-gray-400 mt-1">銘柄情報を取得中...</p>}
+            {quoteError && <p className="text-xs text-red-500 mt-1">{quoteError}</p>}
           </Field>
           <Field label="銘柄名" required>
             <input
